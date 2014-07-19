@@ -1,0 +1,21 @@
+{
+  "name": "assert-stdio",
+  "version": "0.0.0",
+  "description": "a tool for testing the contents of the stdio stream",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec test"
+  },
+  "keywords": [
+    "testing",
+    "asserters",
+    "stdio",
+    "cli",
+    "utilities"
+  ],
+  "author": "Omar Delarosa",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^1.20.1"
+  }
+}
