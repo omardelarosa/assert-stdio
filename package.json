@@ -6,6 +6,10 @@
   "scripts": {
     "test": "mocha -R spec test"
   },
+  "repository": { 
+    "type" : "git",
+    "url" : "git@github.com:omardelarosa/assert-stdio.git"
+  },
   "keywords": [
     "testing",
     "asserters",
