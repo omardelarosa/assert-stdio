@@ -3,11 +3,11 @@ var Promises = require('../promises')
 var Events = require('../events')
 var AssertionError = require('../errors')
 
-describe("Assert.Stdout", function () {
+describe("AssertStdio", function () {
 
   describe("when using no plugins", function(){
     
-    var assert = require('../index.js').Stdout
+    var assert = require('../index.js')
 
     it("should close when a valid command is sent and expected value is received", function(done){
       assert("cat", [path.resolve("./test/fixtures/sample.txt")], "hello, world")
@@ -18,7 +18,7 @@ describe("Assert.Stdout", function () {
 
   describe("when using Promises plugin", function(){
 
-    var assert = require('../index.js').Stdout
+    var assert = require('../index.js')
     
     before(function(){
       assert.use(Promises)
@@ -63,7 +63,7 @@ describe("Assert.Stdout", function () {
 
   describe("when using Events plugin", function(){
 
-    var assert = require('../index.js').Stdout
+    var assert = require('../index.js')
     
     before(function(){
       assert.use(Events)

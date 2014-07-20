@@ -5,7 +5,7 @@ var EventEmitter = require('events').EventEmitter
 var AssertionError = require('./errors')
 var Assertion = require('./assertion')
 
-function AssertStdout (command, args, expected) {
+function AssertStdio (command, args, expected) {
   var self = this
   // console.log("USING", Assertion.using())
   var opts = {
@@ -33,11 +33,11 @@ function AssertStdout (command, args, expected) {
   }
 }
 
-AssertStdout.use = function (cb) {
+AssertStdio.use = function (cb) {
   this.Assertion = Assertion;
   cb.call(this)
 }
 
 
 
-module.exports = AssertStdout;
+module.exports = AssertStdio;
