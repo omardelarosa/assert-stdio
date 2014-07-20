@@ -30,9 +30,23 @@ function Assertion (opts) {
 
   child = exec(concat, Assertion.childProcessCallback.bind(this))
   this.child = child;
-  child.on("message", function(){
-    console.log("message received!", arguments)
-  })
+
+  this.send = function (msg) {
+    self.child.stdin.write(msg)
+    return self;
+  }
+
+  this.end = function(){
+    self.child.stdin.end();
+    return self;
+  }
+
+  // a wrapper for setTimeout
+  this.in = function(ms, cb) {
+    setTimeout(cb.bind(self), ms)
+    return self;
+  }
+
 }
 
 Assertion.childProcessCallback = function (err, stdout, stderr) {

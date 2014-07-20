@@ -5,7 +5,7 @@ var AssertionError = require('../errors')
 
 describe("Assert.Stdout", function () {
 
-  describe("when using no modules", function(){
+  describe("when using no plugins", function(){
     
     var assert = require('../index.js').Stdout
 
@@ -70,38 +70,38 @@ describe("Assert.Stdout", function () {
     })
 
     it("should allow listening for 'end' events", function(done){
-      var a = assert("cat", [path.resolve("./test/fixtures/sample.txt")], "hello, world")
-      a.on("end", function(){
-        done();
-      })
+      assert("cat", [path.resolve("./test/fixtures/sample.txt")], "hello, world")
+        .on("end", function(){
+          done();
+        })
     })
 
     it("should fire an 'error' event on errors", function(done){
-      var a = assert("cat", [path.resolve("./test/fixtures/sample.txt")], "hello, worlddddd")
-      a.on("error", function(err){
-        done();
-      })
+      assert("cat", [path.resolve("./test/fixtures/sample.txt")], "hello, worlddddd")
+        .on("error", function(err){
+          done();
+        })
     })
 
     describe("non-terminating processes", function(){
     
       it("should keep processes alive until closed and then assert", function(done){
-        var a = assert("telnet", [], "telnet> ")
-        setTimeout(function(){
-          a.child.stdin.end()
-        }, 1900)
-        a.on("end", function(){
-          done();
-        })
+        assert("telnet", [], "telnet> ")  
+          .in(1000,function(){
+            this.end();
+          })
+          .on("end", function(){
+            done();
+          })
       })
     
       it("should keep processes alive, accept input and assert entire results", function(done){
-        var a = assert("telnet", [], "telnet> No connection.\nEscape character is '^]'.\ntelnet> ")
-        a.child.stdin.write("status")
-        a.child.stdin.end();
-        a.on("end", function(){
-          done();
-        })
+        assert("telnet", [], "telnet> No connection.\nEscape character is '^]'.\ntelnet> ")
+          .send("status")
+          .on("end", function(){
+            done();
+          })
+          .end();
       })
 
     })
