@@ -27,7 +27,8 @@ function AssertStdio (command, args, expected) {
     self.dfd = dfd
     opts.dfd = dfd
     var a = new Assertion(opts)
-    return dfd.promise;
+    self.promise.and = a;
+    return self.promise;
   }
 }
 

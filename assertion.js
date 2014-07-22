@@ -5,10 +5,6 @@ var EventEmitter = require('events').EventEmitter
 var AssertionError = require('./errors').AssertionError
 var ContainsError = require('./errors').ContainsError
 
-function compare(actual, expected) {
-  return actual === expected;
-}
-
 function Assertion (opts) {
   var self = this;
 
@@ -35,14 +31,13 @@ function Assertion (opts) {
   concat += " ";
   concat += this.args.join(" ");
   this.concat = concat;
-  // aliases for chaining
+
+  // 'this' aliases for chaining
   this.to = this;
   this.and = this;
   this.should = this;
 
-  // callback
-  this.notify = function(cb){ return cb(); }
-
+  // run command
   this.init();
 
 }
@@ -55,13 +50,13 @@ util.inherits(Assertion, EventEmitter)
   *
   */
 
-Assertion.prototype.init = function () {
+Assertion.prototype.init = function (cb) {
   child = exec(this.concat, Assertion.childProcessCallback.bind(this))
   this.child = child;
-
   this.child.stdout.on("data", function(chunk){
     this.chunks.push(chunk);
   }.bind(this))
+  if ('undefined' != typeof cb) { cb(); }
   return this;
 }
 
@@ -72,8 +67,9 @@ Assertion.prototype.init = function () {
   *
   */
 
-Assertion.prototype.send = function (msg) {
+Assertion.prototype.send = function (msg, cb) {
   this.child.stdin.write(msg)
+  if ('undefined' != typeof cb) { cb(); }
   return this;
 }
 
@@ -83,8 +79,9 @@ Assertion.prototype.send = function (msg) {
   *
   */
 
-Assertion.prototype.end = function(){
+Assertion.prototype.end = function(cb){
   this.child.stdin.end();
+  if ('undefined' != typeof cb) { cb(); }
   return this;
 }
 
@@ -117,40 +114,49 @@ Assertion.childProcessCallback = function (err, stdout, stderr) {
   return this;
 }
 
+/** 
+  * Adds an Event listener that compares expected value to stdio on stream end.
+  * @api public
+  */
+
 Assertion.prototype.equal = function equal(expected){
   
-  /** 
-    * Adds an Event listener that compares expected value to stdio on stream end.
-    * @api public
-    */
-
-  this.on("end", function(){
-    var actual = self.to.chunks;
+  this.child.stdout.on("end", function(){
+    var actual = this.to.chunks;
     if (actual == expected) {
     } else {
-      throw new AssertionError(actual.toString(), expected)
+      var err = new AssertionError(actual.toString(), expected)
+      this.emit("error", err)
+      throw err;
     }
   }.bind(this))
   return this;
 }
 
-Assertion.prototype.contain = function equal(expected){
+/** 
+  * Adds an Event listener that searches for expected pattern in the stdout on stream end.
+  * @api public
+  */
 
-  /** 
-    * Adds an Event listener that searches for expected pattern in the stdout on stream end.
-    * @api public
-    */
-
-  this.on("end", function(){
-    
+Assertion.prototype.contain = function contain(expected){
+  
+  this.child.stdout.on("end", function(){
     var actual = this.chunks[0]
     if ( actual.search(expected) > -1 ) {
       return this;
     } else {
-      throw new ContainsError(actual, expected)
+      var err = new ContainsError(actual, expected);
+      this.emit("error", err);
+      throw err;
     }
   }.bind(this))
   return this;
 }
 
+/**
+  * Plural aliases of methods
+  */
+
+Assertion.prototype.equals = Assertion.prototype.equal;
+Assertion.prototype.contains = Assertion.prototype.contain;
 module.exports = Assertion;
