@@ -119,3 +119,7 @@ describe(" 'assert' syntax can be used with plural methods", function(done){
   })
 })
 ```
+
+##TODO:
+
+-add support for non-terminating processes such as telnet.

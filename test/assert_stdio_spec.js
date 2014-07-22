@@ -7,6 +7,7 @@ describe("AssertStdio", function () {
   describe("when using Event-based assertions", function(){
 
     var assert = require('../index.js')
+    var cmd = path.resolve("./test/fixtures/sample-cmd");
 
     it("should allow listening for 'end' events", function(done){
       assert("cat", [path.resolve("./test/fixtures/sample.txt")], "hello, world")
@@ -18,23 +19,6 @@ describe("AssertStdio", function () {
         .on("error", function(err){
           done();
         })
-    })
-
-    describe("non-terminating processes", function(){
-    
-      it("should keep processes alive until closed and then assert", function(done){
-        assert("telnet", [], "telnet> ")  
-          .in(1000,function(){
-            this.end(done);
-          })
-      })
-    
-      it("should keep processes alive, accept input and assert entire results", function(done){
-        assert("telnet", [], "telnet> No connection.\nEscape character is '^]'.\ntelnet> ")
-          .send("status")
-          .end(done);
-      })
-
     })
 
     describe("when there are only two args (no 'expected' string)", function(){
