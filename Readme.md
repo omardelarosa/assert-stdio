@@ -1,5 +1,5 @@
 # assert-stdio
-https://travis-ci.org/omardelarosa/assert-stdio.svg?branch=master
+![TravisCI](https://travis-ci.org/omardelarosa/assert-stdio.svg?branch=master)
 
 **assert-stdio** is a BDD-style, test-framework-agnostic assertion library for Node that tests the contents of stdio streams.  These stdio streams need not be Node applications and can be any shell command that interacts with the stdio stream.
 
