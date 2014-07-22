@@ -28,6 +28,11 @@ It either returns an error (in the case of a failed assertion or invalid command
 ###.send(msg, cb)
 
 Sends a ``String`` **msg** to the stdin.
+```javascript
+assert("telnet", [], "telnet> No connection.\nEscape character is '^]'.\ntelnet> ")
+    .send("status")
+    .end(done);
+```
 
 ###.end(cb)
 
@@ -61,19 +66,17 @@ cmd("cat", [ "path/to/helloworld.txt" ]).should.equal("hello, world").end();
 ```javascript
 var expect = require('assert-stdio')
 expect("cat", [ "path/to/helloworld.txt" ]).to.equal("hello, world").end();
-
 ```
 
 ###assertion chaining
 ```javascript
 var expect = require('assert-stdio')
 expect("cat", [ "path/to/helloworld.txt" ]).to.equal("hello, world").end();
-
 ```
 
 ##Promises API
 
-To use Promises, you must include the plugin after the assert-stdio library has been required.  When used, 
+To use Promises, you must include the plugin after the assert-stdio library has been required.  When used, the ``require`` function returns a [Promise](https://github.com/kriskowal/q) after being called.
 
 ```javascript
 var cmd = require('assert-stdio')
@@ -83,7 +86,36 @@ cmd("cat", ["path/to/file"])
 .then(function(result){
   // do something else when promise resolves
 })
+.nodeify(done)
 // returns a promise
 ```
 
 ##Mocha Examples
+
+```javascript
+describe(" 'assert' syntax can be used with plural methods", function(done){
+
+    var assert = require('assert-stdio')
+    var args = ["path/to/file.txt"];
+
+    it(".equals() compares to a valid string ", function(done){
+      assert("cat", args).equals("hello, world").end(done)
+    })
+
+    it(".contains() searches for RegExp match", function(done){
+      assert("cat", args).contains(/ell/).end(done)
+    })
+
+    it(".contains() searches for String match", function(done){
+      assert("cat", args).contains("hello").end(done)
+    })
+
+    it(".contains().and.contains() can be chained", function(done){
+      assert("cat", args).contains("hello")
+        .and.contains("world").end(done)
+    })
+
+  })
+
+})
+```
