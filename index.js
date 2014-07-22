@@ -18,7 +18,7 @@ function AssertStdio (command, args, expected) {
 
   if (!Assertion.using) {
     var a = new Assertion(opts);
-    return a.init();
+    return a;
 
   } else if (Assertion.using() === "promises") {
     dfd = q.defer()
@@ -27,7 +27,6 @@ function AssertStdio (command, args, expected) {
     self.dfd = dfd
     opts.dfd = dfd
     var a = new Assertion(opts)
-    a.init()
     return dfd.promise;
   }
 }

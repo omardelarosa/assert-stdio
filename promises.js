@@ -16,7 +16,6 @@ module.exports = function(){
     if (err) {
       promise.reject();
     } 
-    console.log("expected: '%s', out: '%s'", this.expected, stdout)
     // compare only if "expected" was passed in
     if (this.opts.expected) {
       if (stdout === this.opts.expected) {
