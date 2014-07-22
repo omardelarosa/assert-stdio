@@ -114,8 +114,7 @@ describe(" 'assert' syntax can be used with plural methods", function(done){
       assert("cat", args).contains("hello")
         .and.contains("world").end(done)
     })
-
+    
   })
-
 })
 ```
