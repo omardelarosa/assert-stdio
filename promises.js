@@ -1,4 +1,4 @@
-var AssertionError = require('./errors')
+var AssertionError = require('./errors').AssertionError
 
 /** this function extends an assertion.
   * it can be passed in with the .use method.
@@ -16,12 +16,15 @@ module.exports = function(){
     if (err) {
       promise.reject();
     } 
-    // compare using strict operator
-    if (stdout === this.opts.expected) {
-      promise.resolve();
-    } else {
-      this.error = new AssertionError(stdout, this.opts.expected)
-      promise.reject(this.error);
+    console.log("expected: '%s', out: '%s'", this.expected, stdout)
+    // compare only if "expected" was passed in
+    if (this.opts.expected) {
+      if (stdout === this.opts.expected) {
+        promise.resolve();
+      } else {
+        this.error = new AssertionError(stdout, this.opts.expected)
+        promise.reject(this.error);
+      }
     }
   }
 
